@@ -2,6 +2,9 @@ import express from 'express'
 import path from 'path'
 //import {requestTime, logger} from './middlewares.js'
 import serverRoutes from './routes/servers.js'
+import multer from 'multer'
+
+var upload = multer({ dest: './data/' })
 
 const PORT = 3333
 const application = express()
@@ -19,6 +22,14 @@ application.set('views', path.resolve(__dirname,'templates'))
 // })
 
 application.use(serverRoutes)
+
+application.post('/api/upload', upload.single('userfile'), function (req, res) {
+   // req.file is the name of your file in the form above, here 'uploaded_file'
+   // req.body will hold the text fields, if there were any 
+   console.log(req.file, req.body)
+   res.status(200)
+   res.json({ok: 1})
+});
 
 application.get('/', (req, res) => {
     res.render('index', {title: 'Main page', active: 'main', servport: PORT})
